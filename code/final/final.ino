@@ -17,9 +17,12 @@ int xavg, yavg, zavg;
 int steps, flag = 0;
 
 const int buttonPin = 2;     // the number of the pushbutton pin
+const int buttonPin_1 = 4;     // the number of the pushbutton pin
+const int buttonPin_2 = 7; 
+const int buttonPin_3 = 8; 
+int buttonState_2 = 0;
 
-const int buttonPin_1 = 3;     // the number of the pushbutton pin
-
+int buttonState_3 = 0;
 // variables will change:
 int buttonState = 0;         // variable for reading the pushbutton status
 int buttonState_1 = 0;         // variable for reading the pushbutton status
@@ -34,8 +37,12 @@ void setup()
 
   r1 = 9720.0;
 
- pinMode(buttonPin, INPUT);
-  
+ pinMode(buttonPin, INPUT);  //start the session
+  pinMode(5, INPUT); // Setup for leads off detection LO +
+pinMode(6, INPUT); // Setup for leads off detection LO -
+ pinMode(buttonPin_1, INPUT);   //end the session
+ pinMode(buttonPin_2, INPUT);  //ecg
+ pinMode(buttonPin_3, INPUT); 
   delay(100);
   pinMode(TR_PIN, INPUT);
  calibrate();
@@ -46,21 +53,27 @@ void loop()
 
  buttonState = digitalRead(buttonPin);
   buttonState_1 = digitalRead(buttonPin_1);
-  Serial.println(buttonState);
+   buttonState_2 = digitalRead(buttonPin_2);
+   buttonState_3 = digitalRead(buttonPin_3);
+  //Serial.println(buttonState);
  
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (buttonState == HIGH) {
         start();
     }
-    Serial.println("inside void loop");
+
+   else if(buttonState_2 == HIGH){
+        ecg();
+    }
+    //Serial.println("inside void loop");
   } 
 
 
  
 void start(){
-  Serial.println("Button is pressed");
+  //Serial.println("Button is pressed");
    for(;;){
-    Serial.println("Im in for loop");
+   // Serial.println("Im in for loop");
      int acc = 0;
   float totvect[100] = {0};
   float totave[100] = {0};
@@ -190,7 +203,15 @@ void start(){
  } 
  }
 
+void ecg(){
 
+    for(;;){
+     Serial.println(analogRead(A1));
+      if(buttonState_3 == HIGH){
+        break;
+        }
+    }
+  }
 
 void calibrate()
 {
